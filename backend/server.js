@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 require('dotenv').config();
+
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
@@ -10,7 +11,6 @@ app.use(bodyParser.json());
 // Connect to MongoDB
 const connectDB = async () => {
     try {
-        // Add error handling for missing or invalid MongoDB URI
         if (!process.env.MONGODB_URI) {
             throw new Error('MongoDB URI is not defined in environment variables');
         }
@@ -22,9 +22,7 @@ const connectDB = async () => {
         console.log('MongoDB connected...');
     } catch (error) {
         console.error('MongoDB connection error:', error);
-        // Don't exit process on connection error, allow retries
-        console.log('Retrying connection in 5 seconds...');
-        setTimeout(connectDB, 5000);
+        process.exit(1); // Exit the application if connection fails
     }
 };
 
@@ -55,5 +53,5 @@ app.post('/api/numbers', async (req, res) => {
 });
 
 // Start Server
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
